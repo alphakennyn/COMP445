@@ -18,7 +18,7 @@ const arguments = yargs.argv;
  * Call our basicHttp module that contains all our filter functions.
  */
 const MyArgs = new BasicHTTP(arguments);
-
+console.log(MyArgs.isVerbose);
 if (MyArgs.needsHelp) {
   console.log('=====================================');
   console.log(`============== HELP ${MyArgs.requestType.toUpperCase()} ================`);
@@ -56,17 +56,22 @@ if (MyArgs.needsHelp) {
   console.log(' ')
   console.log('=======================================');
   console.log(' ')
-} else if (MyArgs.requestType && MyArgs.url !== '') {
-  let myData;
+} else if (MyArgs.requestType && MyArgs.url.length > 0) {
   const urlArray = MyArgs.url.split('/');
   const host = `${urlArray[0]}/${urlArray[1]}/${urlArray[2]}`;
-  const path = `/${urlArray[3]}`;
+  const path = urlArray[3] ? `/${urlArray[3]}` : '/';
+
+  const options = {
+    host,
+    path,
+  }
 
   switch(MyArgs.requestType) {
-    case 'get':
-      console.log(`getting from ${MyArgs.url}`)
-      HTTPRequests.myRequest(MyArgs.requestType, host, path).then(res => {
-        console.log(res);
+    case 'get':     
+      HTTPRequests.myGet(MyArgs.requestType, options).then(res => {
+        console.log('wtf:', res);
+      }).catch(err => {
+        console.log('app:: wtf??: ', err)
       });
       break;
     case 'post':
@@ -78,4 +83,4 @@ if (MyArgs.needsHelp) {
   }
 }
 
-console.log(arguments)
+console.log('done')

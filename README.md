@@ -1,10 +1,10 @@
-#Course name
+# Course name
 COMP 445 taught by Prof. Aiman Hanna
 
-##Student Name
+## Student Name
 Kenny Hoang Khang Nguyen
 
-##Student ID
+## Student ID
 27079427
 
 Fall 2018
