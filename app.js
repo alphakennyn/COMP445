@@ -68,6 +68,7 @@ if (MyArgs.needsHelp) {
 
   switch(MyArgs.requestType) {
     case 'get':     
+      options.requestType = 'get';
       HTTPRequests.myGet(MyArgs.requestType, options).then(res => {
         console.log('wtf:', res);
       }).catch(err => {

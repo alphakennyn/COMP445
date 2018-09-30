@@ -2,16 +2,17 @@ const http = require('http');
 const querystring = require('querystring');
 
 
-exports.myGet = async function (isVerbose, requestType, ...argsArray) {
+exports.myGet = async function (isVerbose, ...argsArray) {
   try {
     const args = argsArray[0];
     const options = {
       host: args.host,
       path: args.path !== undefined ? args.path : '/',
-      method: requestType.toUpperCase(),
+      method: args.requestType.toUpperCase(),
     }
-
-    return http.get(`${options.host + options.path}`, res => {
+    const url = `${options.host + options.path}`
+    console.log(url)
+    http.request( options, res => {
       const { statusCode } = res;
 
       if(statusCode === 200) {
@@ -39,9 +40,12 @@ exports.myGet = async function (isVerbose, requestType, ...argsArray) {
 
         return myData;
       }
-    }).catch((err) => {
-      throw new Error('Seomthing went wrong with get..')
-    });
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+    });;
+    // .catch((err) => {
+    //   throw new Error('Seomthing went wrong with get..')
+    // });
 
     
     // if(response.statusCode >= 300) {
