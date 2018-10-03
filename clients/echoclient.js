@@ -12,6 +12,7 @@ const argv = yargs.usage('node echoclient.js [--host host] [--port port]')
 const options = {
   host: argv.host,
   port: argv.port,
+  // path: 'get?'
 };
 
 console.log(options)
@@ -24,24 +25,33 @@ const requests = [];
  */
 client.on('connect', () => {
   console.log('Type any thing then ENTER. Press Ctrl+C to terminate');
+  const params = {
+    assignment: 1,
+    course: 'networking'
+  };
+  const command = `GET /get?course=networking&assignment=1 HTTP/1.1 \r\nHost: ${options.host}`;
+
+  client.write(command);
   
-  process.stdin.on('readable', () => {
-    const chunk =  process.stdin.read();
-    console.log(chunk)
-    if (chunk != null) {
-      requests.push({
-        sendLength: chunk.byteLength,
-        response: new Buffer(0)
-      });
-      client.write(chunk);
-    }
-  });
+  // process.stdin.on('readable', () => {
+  //   const chunk =  process.stdin.read();
+  //   console.log('chunk',chunk)
+  //   if (chunk != null) {
+  //     requests.push({
+  //       sendLength: chunk.byteLength,
+  //       response: new Buffer(0)
+  //     });
+  //     client.write(chunk);
+  //   }
+  // });
 });
 
 /**
  * Response
  */
 client.on('data', buf => {
+  console.log('GOT DATA')
+
   if (requests.length == 0) {
     client.end();
     process.exit(-1);
@@ -49,7 +59,7 @@ client.on('data', buf => {
 
   const r = requests[0];
   r.response = Buffer.concat([r.response, buf]);
-
+  console.log(r)
   if(r.response.byteLength >= r.sendLength){
     requests.shift();
     /**
@@ -65,5 +75,6 @@ client.on('error', err => {
   process.exit(-1);
 });
 client.on('close', err => {
-  console.log('Good bye!')
+  console.log('Good bye!');
+  process.exit(-1);
 });
