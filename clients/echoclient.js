@@ -59,7 +59,6 @@ client.on('data', buf => {
 
   const r = requests[0];
   r.response = Buffer.concat([r.response, buf]);
-  console.log(r)
   if(r.response.byteLength >= r.sendLength){
     requests.shift();
     /**
@@ -74,6 +73,7 @@ client.on('error', err => {
   console.log(JSON.stringify(err, null, 2));
   process.exit(-1);
 });
+
 client.on('close', err => {
   console.log('Good bye!');
   process.exit(-1);
