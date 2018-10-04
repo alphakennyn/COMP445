@@ -26,13 +26,8 @@ module.exports = class Client {
     /**
      * Connect
      */
-    client.socket.connect(PORT, client.host, () => {
-      console.log('connected! to socket')
-    });
+    client.socket.connect(PORT, client.host);
 
-    client.socket.on('close', () => {
-      console.log('Client closed');
-    });
   }
 
   httpRequest(reqBody) {

@@ -12,7 +12,4 @@
   "dependencies": {
     "yargs": "^4.8.1"
   },
-  "bin": {
-    "httpc": "node app.js"
-  }
 }

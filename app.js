@@ -53,14 +53,15 @@ if (MyArgs.needsHelp) {
   const client = new Client(MyArgs.requestType, host, path);
   
   client.httpRequest().then((data) => {
+    console.log(' ')
     if( MyArgs.isVerbose ){
       console.log(data.verbose)
     } else {
-      console.log(data.basic)
+      console.log(JSON.stringify(data.basic, null ,2))
     }
+    console.log(' ')
+
   }).catch((err) => {
     console.log('APP ERROR:' ,err)
   })
 }
-
-console.log('done')
