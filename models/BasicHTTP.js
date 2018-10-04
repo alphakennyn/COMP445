@@ -2,7 +2,7 @@
 
 module.exports = class BasicHTTP {
   constructor(args) {
-    this.args = args;
+    this.args = this._formatArgs(args);
 
     this._namelessArgs = args._;
 
@@ -12,6 +12,24 @@ module.exports = class BasicHTTP {
     this._body = this.args.d ? this._formatData(this.args.d) : {} ;
     this._url = this._getURL(this._namelessArgs);
     this._verbose = this.args.v ? true : false;
+  }
+
+  /**
+   * Format the args for any smaller details
+   * Known issue:
+   * - The optoin -v is suppose to be called on it's own, however if -v is followed by anything non-header object, yargs will assume -v is the label for that said object.
+   *    Solution: Sepereate -v from object
+   * 
+   * @param {Object} args 
+   */
+  _formatArgs(args) {
+    if (!!args.v) {
+      if (typeof args.v !== 'boolean') {
+        args._.push(args.v)
+        args.v = true;
+      }
+    }
+    return args
   }
 
   /**
