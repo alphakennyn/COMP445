@@ -17,6 +17,7 @@ const arguments = yargs.argv;
 /**
  * Call our basicHttp module that contains all our filter functions.
  */
+console.log(arguments)
 const MyArgs = new BasicHTTP(arguments);
 
 if (MyArgs.needsHelp) {
@@ -55,6 +56,7 @@ if (MyArgs.needsHelp) {
     headers: MyArgs.headers,
     body: MyArgs.body,
   }
+  console.log(postContent.body)
 
   client.httpRequest(postContent).then((data) => {
     console.log(' ')

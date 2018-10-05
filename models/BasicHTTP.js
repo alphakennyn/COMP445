@@ -1,4 +1,5 @@
 'use strict';
+const querystring = require('querystring');
 
 module.exports = class BasicHTTP {
   constructor(args) {
@@ -9,7 +10,7 @@ module.exports = class BasicHTTP {
     this._needsHelp = this._namelessArgs.includes('help') ? true : false;
     this._request = this._getRequest(this._namelessArgs);
     this._headers = this.args.h ? this._formatHeader(this.args.h) : {} ;
-    this._body = this.args.d ? this._formatData({ Assignment: 1}) : {} ;
+    this._body = this.args.d ? this._formatData(this.args.d) : {} ;
     this._url = this._getURL(this._namelessArgs);
     this._verbose = this.args.v ? true : false;
   }
@@ -74,32 +75,39 @@ module.exports = class BasicHTTP {
    * @returns {Object} 
    */
   _formatData(data) {
-    let returnData;
-    if (typeof data === 'object') {
-      console.log(data);
-    } else if(typeof data === 'string') {
-      //data = data.replaceAll("'","");
-      console.log('basic arg', data);
-      returnData = data.replace(/'/g,"");//JSON.stringify(data);
-      const parsedData = JSON.parse(returnData);
-      console.log('stringified',returnData);
-      console.log(typeof returnData);
-    }
+    // let returnData;
+    // if (typeof data === 'object') {
+    //   console.log(qs);
+    //   return querystring.stringify(data)
+    // } else if(typeof data === 'string') {
+    //   //data = data.replaceAll("'","");
+    //   console.log('DATA IS STRING', data);
+    //   console.log('THIS WONT WORK');
+    //   returnData = data.replace(/'/g,"");//JSON.stringify(data);
+    //   const parsedData = JSON.parse(returnData);
+    //   return parsedData;
+    // }
 
-    return data
-    // const myData = [].concat(data);
+    // return data
+    const myData = [].concat(data);
 
-    // return [...myData].reduce((acc, value) => {
-    //   const someData = value.split('=');
+    //return
+    // const cleanedData =
+    return [...myData].reduce((acc, value) => {
+      const parseVal = value.replace(/[{'}]/g,'');
+      console.log(parseVal)
+      const someData = parseVal.split(':');
       
-    //   if(someData.length === 2) {
-    //     acc[someData[0]] = someData[1];
-    //   } else {
-    //     console.log(`${value} is not a valid format. Please use proper formating i.e. foo=bar`)
-    //   }
-    //   console.log(acc);
-    //   return acc;
-    // }, {});
+      if(someData.length === 2) {
+        acc[someData[0]] = someData[1];
+      } else {
+        console.log(`${value} is not a valid format. Please use proper formating i.e. foo=bar`)
+      }
+      console.log(acc);
+      return acc;
+    }, {});
+
+    //return querystring.stringify(cleanedData);
   }
 
   /**

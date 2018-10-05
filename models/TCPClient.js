@@ -33,16 +33,17 @@ module.exports = class Client {
   httpRequest(content) {
     const client = this;
     let body = '';
-    
-    if (Helper.isEmptyObject(content.body) && Helper.isEmptyObject(content.headers)) {
+
+    if (!Helper.isEmptyObject(content.body) && !Helper.isEmptyObject(content.headers)) {
       console.log('wtf body',Helper.isEmptyObject(content.body))
-      body = content.body;
+      body = '\r\n' + (JSON.stringify(content.body));
     } 
+
     console.log('body', body)
     return new Promise((resolve, reject) => {
 
       const command = (body === '') ? `${client.req} ${client.path} HTTP/1.0\r\nHost: ${client.host}\r\n\r\n ` : `${client.req} ${client.path} HTTP/1.0\r\nHost: ${client.host}\r\n${body}\r\n `;
-      console.log(command);
+      console.log('command',command);
       client.socket.write(command);
       
       /**
