@@ -1,7 +1,7 @@
 'use strict';
 
 const net = require('net');
-
+const Helper = require('../helper');
 const PORT = 80;
 
 /**
@@ -30,13 +30,19 @@ module.exports = class Client {
 
   }
 
-  httpRequest(reqBody) {
+  httpRequest(content) {
     const client = this;
-    const body = reqBody || '';
-
+    let body = '';
+    
+    if (Helper.isEmptyObject(content.body) && Helper.isEmptyObject(content.headers)) {
+      console.log('wtf body',Helper.isEmptyObject(content.body))
+      body = content.body;
+    } 
+    console.log('body', body)
     return new Promise((resolve, reject) => {
 
       const command = (body === '') ? `${client.req} ${client.path} HTTP/1.0\r\nHost: ${client.host}\r\n\r\n ` : `${client.req} ${client.path} HTTP/1.0\r\nHost: ${client.host}\r\n${body}\r\n `;
+      console.log(command);
       client.socket.write(command);
       
       /**

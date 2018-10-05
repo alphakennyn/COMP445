@@ -8,8 +8,8 @@ module.exports = class BasicHTTP {
 
     this._needsHelp = this._namelessArgs.includes('help') ? true : false;
     this._request = this._getRequest(this._namelessArgs);
-    this._headers = this.args.h ? this._formatData(this.args.h) : {} ;
-    this._body = this.args.d ? this._formatData(this.args.d) : {} ;
+    this._headers = this.args.h ? this._formatHeader(this.args.h) : {} ;
+    this._body = this.args.d ? this._formatData({ Assignment: 1}) : {} ;
     this._url = this._getURL(this._namelessArgs);
     this._verbose = this.args.v ? true : false;
   }
@@ -29,7 +29,7 @@ module.exports = class BasicHTTP {
         args.v = true;
       }
     }
-    return args
+    return args;
   }
 
   /**
@@ -51,24 +51,55 @@ module.exports = class BasicHTTP {
   }
 
   /**
+   * Format stirng to object
+   * @param {String} header 
+   * @returns {Obect}
+   */
+  _formatHeader(header) {
+    const headerObj = {}
+    if (typeof header === 'string') {
+      const headerArr = header.split(':');
+      headerObj[headerArr[0]] = headerArr[1]
+    } else { // Is array
+      console.log(`Header: ${header} is not a valid format. Please use proper formating i.e. -h Heaader-Field: Header-data`)
+    }
+
+    return headerObj;
+  }
+
+  /**
    * Format the params to an object to be used for request
-   * To be used for header and body
-   * @param {Array | String} data 
+   * To be used for body
+   * @param {Array | String |Object} data 
    * @returns {Object} 
    */
   _formatData(data) {
-    const myData = [].concat(data);
-    return [...myData].reduce((acc, value) => {
-      const someData = value.split('=');
+    let returnData;
+    if (typeof data === 'object') {
+      console.log(data);
+    } else if(typeof data === 'string') {
+      //data = data.replaceAll("'","");
+      console.log('basic arg', data);
+      returnData = data.replace(/'/g,"");//JSON.stringify(data);
+      const parsedData = JSON.parse(returnData);
+      console.log('stringified',returnData);
+      console.log(typeof returnData);
+    }
+
+    return data
+    // const myData = [].concat(data);
+
+    // return [...myData].reduce((acc, value) => {
+    //   const someData = value.split('=');
       
-      if(someData.length === 2) {
-        acc[someData[0]] = someData[1];
-      } else {
-        console.log(`${value} is not a valid format. Please use proper formating i.e. foo=bar`)
-      }
-      console.log(acc);
-      return acc;
-    }, {});
+    //   if(someData.length === 2) {
+    //     acc[someData[0]] = someData[1];
+    //   } else {
+    //     console.log(`${value} is not a valid format. Please use proper formating i.e. foo=bar`)
+    //   }
+    //   console.log(acc);
+    //   return acc;
+    // }, {});
   }
 
   /**

@@ -49,10 +49,14 @@ if (MyArgs.needsHelp) {
     host,
     path,
   }
-
   const client = new Client(MyArgs.requestType, host, path);
   
-  client.httpRequest().then((data) => {
+  const postContent = {
+    headers: MyArgs.headers,
+    body: MyArgs.body,
+  }
+
+  client.httpRequest(postContent).then((data) => {
     console.log(' ')
     if( MyArgs.isVerbose ){
       console.log(data.verbose)
@@ -60,8 +64,8 @@ if (MyArgs.needsHelp) {
       console.log(JSON.stringify(data.basic, null ,2))
     }
     console.log(' ')
-
+  
   }).catch((err) => {
     console.log('APP ERROR:' ,err)
-  })
+  });
 }
