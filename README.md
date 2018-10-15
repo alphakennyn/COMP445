@@ -8,3 +8,13 @@ Kenny Hoang Khang Nguyen
 27079427
 
 Fall 2018
+
+## How to run
+
+#### Mac
+
+`./httpc your_command`
+
+#### Windows
+
+`httpc your_command`
