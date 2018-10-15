@@ -1,1 +1,1 @@
-node app.js httpc %*
+node app.js httpc $@
