@@ -33,17 +33,17 @@ client.on('connect', () => {
 
   client.write(command);
   
-  // process.stdin.on('readable', () => {
-  //   const chunk =  process.stdin.read();
-  //   console.log('chunk',chunk)
-  //   if (chunk != null) {
-  //     requests.push({
-  //       sendLength: chunk.byteLength,
-  //       response: new Buffer(0)
-  //     });
-  //     client.write(chunk);
-  //   }
-  // });
+  process.stdin.on('readable', () => {
+    const chunk =  process.stdin.read();
+    console.log('chunk',chunk)
+    if (chunk != null) {
+      requests.push({
+        sendLength: chunk.byteLength,
+        response: new Buffer(0)
+      });
+      client.write(chunk);
+    }
+  });
 });
 
 /**
