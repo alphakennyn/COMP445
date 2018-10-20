@@ -18,3 +18,17 @@ Fall 2018
 #### Windows
 
 `httpc your_command`
+
+## Commands
+
+### GET
+
+./httpc.sh get 'http://httpbin.org/get?course=networking&assignment=1'
+
+### GET VERBOSE
+
+./httpc.sh get -v 'http://httpbin.org/get?course=networking&assignment=1'
+
+### POST
+
+./httpc.sh post -h Content-Type:application/json --d {"Assignment":1} http://httpbin.org/post

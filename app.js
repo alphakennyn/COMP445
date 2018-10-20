@@ -56,7 +56,6 @@ if (MyArgs.needsHelp) {
     headers: MyArgs.headers,
     body: MyArgs.body,
   }
-  console.log(postContent.body)
 
   client.httpRequest(postContent).then((data) => {
     console.log(' ')

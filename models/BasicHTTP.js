@@ -60,8 +60,17 @@ module.exports = class BasicHTTP {
     const headerObj = {}
     if (typeof header === 'string') {
       const headerArr = header.split(':');
+      return header;
       headerObj[headerArr[0]] = headerArr[1]
     } else { // Is array
+      return header.reduce((acc,arg) => {
+        let currentHead = `${acc}\r\n${arg}`;
+        if (acc === '') {
+          currentHead = arg;
+        }
+        return currentHead;
+      }, '');
+    
       console.log(`Header: ${header} is not a valid format. Please use proper formating i.e. -h Heaader-Field: Header-data`)
     }
 
@@ -90,20 +99,16 @@ module.exports = class BasicHTTP {
 
     // return data
     const myData = [].concat(data);
-
     //return
     // const cleanedData =
     return [...myData].reduce((acc, value) => {
       const parseVal = value.replace(/[{'}]/g,'');
-      console.log(parseVal)
       const someData = parseVal.split(':');
-      
       if(someData.length === 2) {
         acc[someData[0]] = someData[1];
       } else {
         console.log(`${value} is not a valid format. Please use proper formating i.e. foo=bar`)
       }
-      console.log(acc);
       return acc;
     }, {});
 
