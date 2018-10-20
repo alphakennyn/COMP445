@@ -1,5 +1,5 @@
-# Course name
-COMP 445 taught by Prof. Aiman Hanna
+# COMP 445
+taught by Prof. Aiman Hanna
 
 ## Student Name
 Kenny Hoang Khang Nguyen
@@ -18,6 +18,8 @@ Fall 2018
 #### Windows
 
 `httpc your_command`
+
+---
 
 ## Commands
 
