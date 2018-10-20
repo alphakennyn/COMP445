@@ -1,8 +1,8 @@
-const BasicHTTP = require('./BasicHTTP');
-
-const http = require('http');
+const BasicHTTP = require('./models/BasicHTTP');
 const yargs = require('yargs');
 
+const Client = require('./models/TCPClient'); //require('./services/HTTPRequests');
+const helpDialog = require('./messages/help');
 /**
  * Get curl arguments as object.
  * 
@@ -14,11 +14,59 @@ const yargs = require('yargs');
  * 
  */
 const arguments = yargs.argv;
-
 /**
  * Call our basicHttp module that contains all our filter functions.
  */
+console.log(arguments)
 const MyArgs = new BasicHTTP(arguments);
 
+if (MyArgs.needsHelp) {
+  console.log('=====================================');
+  console.log(`============== HELP ${MyArgs.requestType.toUpperCase()} =============`);
+  console.log('=====================================');
+  console.log(' ')
 
-console.log(arguments)
+  switch (MyArgs.requestType) {
+    case 'get':
+      console.log(helpDialog.get);
+      break;
+    case 'post':
+      console.log(helpDialog.post);
+      break;
+    default:
+      console.log(helpDialog.default)
+      break; 
+  }
+
+  console.log(' ')
+  console.log('=======================================');
+  console.log(' ')
+
+} else if (MyArgs.requestType && MyArgs.url.length > 0) {
+  const urlArray = MyArgs.url.split('/');
+  const host = urlArray[2];
+  const path = urlArray[3] ? `/${urlArray[3]}` : '/';
+  const options = {
+    host,
+    path,
+  }
+  const client = new Client(MyArgs.requestType, host, path);
+  
+  const postContent = {
+    headers: MyArgs.headers,
+    body: MyArgs.body,
+  }
+
+  client.httpRequest(postContent).then((data) => {
+    console.log(' ')
+    if( MyArgs.isVerbose ){
+      console.log(data.verbose)
+    } else {
+      console.log(JSON.stringify(data.basic, null ,2))
+    }
+    console.log(' ')
+  
+  }).catch((err) => {
+    console.log('APP ERROR:' ,err)
+  });
+}

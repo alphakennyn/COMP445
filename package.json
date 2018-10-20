@@ -4,7 +4,7 @@
   "description": "Networking examples for COMP-445",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "httpc": "node app.js"
   },
   "repository": {},
   "author": "ENCS",
