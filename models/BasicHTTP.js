@@ -12,6 +12,7 @@ module.exports = class BasicHTTP {
     this._headers = this.args.h ? this._formatHeader(this.args.h) : {} ;
     this._body = this.args.d ? this._formatData(this.args.d) : {} ;
     this._url = this._getURL(this._namelessArgs);
+    this._isHTTP = this._url.includes('http');
     this._verbose = this.args.v ? true : false;
   }
 
@@ -102,7 +103,7 @@ module.exports = class BasicHTTP {
     //return
     // const cleanedData =
     return [...myData].reduce((acc, value) => {
-      const parseVal = value.replace(/[{'}]/g,'');
+      const parseVal = value.replace(/[{}]/g,'');
       const someData = parseVal.split(':');
       if(someData.length === 2) {
         acc[someData[0]] = someData[1];
@@ -123,7 +124,7 @@ module.exports = class BasicHTTP {
    */
   _getURL(args) {
     return [...args].reduce((acc, arg) => {
-      if (arg.includes('http')) {
+      if (arg.includes('/')) {
         acc = arg;
       }
 
@@ -153,6 +154,10 @@ module.exports = class BasicHTTP {
 
   get isVerbose() {
     return this._verbose;
+  }
+
+  get isHTTP() {
+    return this._isHTTP;
   }
 }
 

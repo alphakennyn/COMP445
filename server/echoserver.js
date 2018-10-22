@@ -17,16 +17,25 @@ server.listen({port: argv.port}, () => {
   console.log('Echo server is listening at %j', server.address());
 });
 
+/**
+ * handler when a client connects to the server. 
+ * @param {Object} socket 
+ */
 function handleClient(socket) {
   console.log('New client from %j', socket.address());
   socket
       .on('data', buf => {
-        const clientInput =  buf.toString('utf8')
-        const clientArgs = yargs.argv;
+        const clientInput =  buf.toString('utf8').replace("\n", "");
+        const clientArgs = yargs(clientInput.split(' ')).argv;
+        console.log('Client input:',clientInput)
+        console.log('Client request:',clientArgs)
+
         const mainApp = new Main(clientArgs);
-        console.log('Client request:',clientInput)
         
-        // socket.write(buf);
+        const response = mainApp.myHttpResponse() || 'no htttp req';
+        const fileResponse = mainApp.myFilesResponse();
+        console.log(fileResponse)
+        socket.write(response);
       })
       .on('error', err => {
         console.log('socket error %j', err);

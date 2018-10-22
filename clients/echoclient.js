@@ -12,6 +12,7 @@ const argv = yargs.usage('node echoclient.js [--host host] [--port port]')
 const options = {
   host: argv.host,
   port: argv.port,
+  name: 'Client guy'
 };
 
 console.log(options)
