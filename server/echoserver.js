@@ -2,7 +2,8 @@
 
 const net   = require('net');
 const yargs = require('yargs');
-const app = require('./app.js');
+const app = require('../app.js');
+const Main = require('../mainApplication.js');
 
 const argv = yargs.usage('node echoserver.js [--port port]')
     .default('port', 8007)
@@ -20,9 +21,12 @@ function handleClient(socket) {
   console.log('New client from %j', socket.address());
   socket
       .on('data', buf => {
-        // just echo what received
-        console.log('you wrote:', buf)
-        socket.write(buf);
+        const clientInput =  buf.toString('utf8')
+        const clientArgs = yargs.argv;
+        const mainApp = new Main(clientArgs);
+        console.log('Client request:',clientInput)
+        
+        // socket.write(buf);
       })
       .on('error', err => {
         console.log('socket error %j', err);
