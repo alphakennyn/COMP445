@@ -58,8 +58,7 @@ client.on('data', buf => {
   r.response = Buffer.concat([r.response, buf]);
   if(r.response.byteLength >= r.sendLength){
     requests.shift();
-
-    console.log("Replied: " + r.response.toString("utf-8"))
+    console.log("Server replied:\n\n" + r.response.toString("utf-8") + '\n')
   }
 });
 

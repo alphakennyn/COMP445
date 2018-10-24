@@ -20,7 +20,7 @@ module.exports = class MainApplication {
       this.MyResponse += '=====================================\n';
       this.MyResponse += `============== HELP ${this.MyArgs.requestType.toUpperCase()} =============\n`;
       this.MyResponse += '=====================================\n\n';
-  
+
       switch (this.MyArgs.requestType) {
         case 'get':
           this.MyResponse += helpDialog.get;
@@ -32,9 +32,9 @@ module.exports = class MainApplication {
           this.MyResponse += helpDialog.default;
           break;
       }
-  
+
       this.MyResponse += '\n=======================================\n';
-  
+
     } else if (this.MyArgs.isHTTP && this.MyArgs.requestType && this.MyArgs.url.length > 0) {
       this.MyResponse += 'doing http stuff';
       const urlArray = this.MyArgs.url.split('/');
@@ -45,12 +45,12 @@ module.exports = class MainApplication {
         path,
       }
       const client = new Client(this.MyArgs.requestType, host, path);
-  
+
       const postContent = {
         headers: this.MyArgs.headers,
         body: this.MyArgs.body,
       }
-  
+
       client.httpRequest(postContent).then((data) => {
         this.MyResponse += '\n';
         if (this.MyArgs.isVerbose) {
@@ -59,7 +59,7 @@ module.exports = class MainApplication {
           this.MyResponse += JSON.stringify(data.basic, null, 2);
         }
         this.MyResponse += '\n';
-  
+
       }).catch((err) => {
         console.log('APP ERROR:', err)
       });
@@ -70,17 +70,27 @@ module.exports = class MainApplication {
 
   /**
    * Go through files search
+   * @async
    */
-  myFilesResponse() {
-    let fileResponse;
-    if (!this.MyArgs.isHTTP) {
-      console.log(this.MyArgs._url)
-      const filePath = path.join(__dirname, 'storage', this.MyArgs._url);
-      const fileClient = new FileClient(filePath);
-      console.log('this shit works:', fileClient.init());
-      fileResponse = fileClient.init();
-    }
+  async myFilesResponse() {
+    const filePath = path.join(__dirname, 'storage', this.MyArgs._url);
+    const fileClient = new FileClient(filePath);
 
-    return fileResponse;
+    if (this.MyArgs._url === '') {
+      return new Promise((res) => {
+        res('Cannot have empty path.... try again :)');
+      })
+    }
+    console.log(this.MyArgs);
+
+    if (this.MyArgs._request === 'get') {
+      return fileClient.getFile();
+    } else if (this.MyArgs._request === 'post') {
+      return fileClient.postFile(this.MyArgs._body, false);
+    }
+  }
+
+  get isHTTP() {
+    return this.MyArgs.isHTTP;
   }
 }

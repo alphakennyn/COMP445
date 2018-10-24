@@ -32,10 +32,29 @@ function handleClient(socket) {
 
         const mainApp = new Main(clientArgs);
         
-        const response = mainApp.myHttpResponse() || 'no htttp req';
-        const fileResponse = mainApp.myFilesResponse();
-        console.log(fileResponse)
-        socket.write(response);
+        let response;
+
+        if(mainApp.isHTTP) {
+          response = mainApp.myHttpResponse() || 'no htttp req';
+          socket.write(response);
+        } else {
+          mainApp.myFilesResponse().then((data) => {
+            let dataToWrite;
+
+            console.log('server:: typeof data', typeof data);
+            console.log('server:: data',data);
+            
+            if (typeof data === 'string') {
+              dataToWrite = data;
+            } else {
+              dataToWrite = JSON.stringify(data)
+            }
+
+            socket.write(dataToWrite);
+          }).catch((err) => {
+            console.log(err);
+          });
+        }
       })
       .on('error', err => {
         console.log('socket error %j', err);

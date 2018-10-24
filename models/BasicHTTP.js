@@ -85,19 +85,10 @@ module.exports = class BasicHTTP {
    * @returns {Object} 
    */
   _formatData(data) {
-    // let returnData;
-    // if (typeof data === 'object') {
-    //   console.log(qs);
-    //   return querystring.stringify(data)
-    // } else if(typeof data === 'string') {
-    //   //data = data.replaceAll("'","");
-    //   console.log('DATA IS STRING', data);
-    //   console.log('THIS WONT WORK');
-    //   returnData = data.replace(/'/g,"");//JSON.stringify(data);
-    //   const parsedData = JSON.parse(returnData);
-    //   return parsedData;
-    // }
 
+    if (typeof data === 'string') {
+      return data;
+    }
     // return data
     const myData = [].concat(data);
     //return
