@@ -27,24 +27,27 @@ function handleClient(socket) {
       .on('data', buf => {
         const clientInput =  buf.toString('utf8').replace("\n", "");
         const clientArgs = yargs(clientInput.split(' ')).argv;
-        console.log('Client input:',clientInput)
-        console.log('Client request:',clientArgs)
+        console.log('CLIENT::Input:',clientInput)
+        console.log('CLIENT::request:',clientArgs)
 
         const mainApp = new Main(clientArgs);
         
         let response;
-
+        
         if(mainApp.isHTTP) {
-          response = mainApp.myHttpResponse() || 'no htttp req';
+          response = mainApp.myHttpResponse() || 'no http req';
           socket.write(response);
         } else {
-          mainApp.myFilesResponse().then((data) => {
+          mainApp.myFilesResponse().then((data) => {            
+            console.log('SERVER:: data received is:', data);
+            console.log('SERVER:: data type received is:',typeof data);
+            
             let dataToWrite;
 
             if (typeof data === 'string') {
-              dataToWrite = data;
+              dataToWrite = Buffer.from(data);
             } else {
-              dataToWrite = JSON.stringify(data)
+              dataToWrite = Buffer.from(JSON.stringify(data))
             }
 
             socket.write(dataToWrite);

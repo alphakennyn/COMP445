@@ -14,6 +14,7 @@ module.exports = class BasicHTTP {
     this._url = this._getURL(this._namelessArgs);
     this._isHTTP = this._url.includes('http');
     this._verbose = this.args.v ? true : false;
+    this._override = this.args.o ? true : false;
   }
 
   /**
@@ -151,6 +152,10 @@ module.exports = class BasicHTTP {
 
   get isHTTP() {
     return this._isHTTP;
+  }
+
+  get override() {
+    return this._override;
   }
 }
 
