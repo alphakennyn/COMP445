@@ -21,7 +21,7 @@ Fall 2018
 
 ---
 
-## Commands
+## Lab 1 Commands
 
 ### GET
 
@@ -34,3 +34,16 @@ Fall 2018
 ### POST
 
 ./httpc.sh post -h Content-Type:application/json --d {"Assignment":1} http://httpbin.org/post
+
+## Lab 2 Commands
+
+### Run server
+
+./httpfs [-v] [--port PORT]
+
+### RUN client
+
+./httpc [--port PORT]
+
+  - get /
+  - Files are stored in /storage
