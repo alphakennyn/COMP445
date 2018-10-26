@@ -41,9 +41,6 @@ function handleClient(socket) {
           mainApp.myFilesResponse().then((data) => {
             let dataToWrite;
 
-            console.log('server:: typeof data', typeof data);
-            console.log('server:: data',data);
-            
             if (typeof data === 'string') {
               dataToWrite = data;
             } else {
