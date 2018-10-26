@@ -73,25 +73,28 @@ module.exports = class MainApplication {
    * @async
    */
   async myFilesResponse() {
-    const filePath = path.join(__dirname, 'storage', this.MyArgs._url);
+    const filePath = path.join(__dirname, 'storage', this.MyArgs.url);
     const fileClient = new FileClient(filePath);
 
-    console.log(this.MyArgs)
+    console.log(this.MyArgs.url)
+    console.log(this.MyArgs.url.includes('/'))
 
-    if (this.MyArgs._url === '') {
+    if (this.MyArgs.url === '/' && this.MyArgs.requestType === 'get') {
+      return fileClient.getFile();
+    } else if (this.MyArgs.url === '') {
       return new Promise((res) => {
         res('Cannot have empty path.... try again :)');
       })
-    } else if(!this.MyArgs._url.includes('.')) {
+    } else if(!this.MyArgs.url.includes('.')) {
       return new Promise(res => {
         res('Must specify the file type.')
       })
     }
 
-    if (this.MyArgs._request === 'get') {
+    if (this.MyArgs.requestType === 'get') {
       return fileClient.getFile();
-    } else if (this.MyArgs._request === 'post') {
-      return fileClient.postFile(this.MyArgs._body, false);
+    } else if (this.MyArgs.requestType === 'post') {
+      return fileClient.postFile(this.MyArgs.body, this.MyArgs.override);
     }
   }
 
