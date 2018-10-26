@@ -38,11 +38,32 @@ module.exports = class Client {
 
   async postFile(data, override) {
     let writeData;
+  
+    if(data === null) {
+      return 'Please enter data :)';
+    }
+
     try {
-      if (override) {
-        writeData = await asyncWrite(this.path, data)
+      try {
+        await readdir(this.path)
+        if (override) {
+          console.log('writting...')
+          writeData = 'Override is true, replacing file..';
+          await asyncWrite(this.path, data);
+        } else {
+          console.log('appending...')
+          writeData = 'Adding new content to file'
+          await asyncAppend(this.path, data);
+        }
+      } catch (e){
+        if (e.errno === -2) {
+          writeData = 'File does not exist, creating'
+          await asyncWrite(this.path, data);
+        } else if (e.errno === -20){
+          writeData = 'Adding new content to file'
+          await asyncAppend(this.path, data);
+        }
       }
-      writeData = await asyncAppend(this.path, data)
     } catch (err) {
       console.log('postFile::Error writing file', err);
     } finally {
