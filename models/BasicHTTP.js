@@ -88,6 +88,8 @@ module.exports = class BasicHTTP {
 
     if (typeof data === 'string') {
       return data;
+    } else if (typeof data === 'boolean') {
+      return null;
     }
     // return data
     const myData = [].concat(data);

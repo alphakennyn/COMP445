@@ -76,12 +76,17 @@ module.exports = class MainApplication {
     const filePath = path.join(__dirname, 'storage', this.MyArgs._url);
     const fileClient = new FileClient(filePath);
 
+    console.log(this.MyArgs)
+
     if (this.MyArgs._url === '') {
       return new Promise((res) => {
         res('Cannot have empty path.... try again :)');
       })
+    } else if(!this.MyArgs._url.includes('.')) {
+      return new Promise(res => {
+        res('Must specify the file type.')
+      })
     }
-    console.log(this.MyArgs);
 
     if (this.MyArgs._request === 'get') {
       return fileClient.getFile();
