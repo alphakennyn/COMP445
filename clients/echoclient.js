@@ -53,13 +53,14 @@ client.on('data', buf => {
     client.end();
     process.exit(-1);
   }
-
-  const r = requests[0];
-  r.response = Buffer.concat([r.response, buf]);
-  if(r.response.byteLength >= r.sendLength){
-    requests.shift();
-    console.log("Server replied:\n\n" + r.response.toString("utf-8") + '\n')
-  }
+  
+  console.log('Server replied: ', buf.toString("utf-8"))
+  // const r = requests[0];
+  // r.response = Buffer.concat([r.response, buf]);
+  // if(r.response.byteLength >= r.sendLength){
+  //   requests.shift();
+  //   console.log("Server replied:\n\n" + r.response.toString("utf-8") + '\n')
+  // }
 });
 
 client.on('error', err => {
