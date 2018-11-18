@@ -45,5 +45,14 @@ Fall 2018
 
 ./httpc [--port PORT]
 
-  - get /
-  - Files are stored in /storage
+#### get all
+
+get /
+
+#### get specific file
+
+get /a.json
+
+#### post new file
+
+post /something
