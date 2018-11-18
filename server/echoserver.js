@@ -7,8 +7,11 @@ const Main = require('../mainApplication.js');
 
 const argv = yargs.usage('node echoserver.js [--port port]')
     .default('port', 8007)
+    .default('v', false)
     .help('help')
     .argv;
+
+const isVerbose = argv.v ? true : false;
 
 const server = net.createServer(handleClient)
     .on('error', err => {throw err; });
@@ -27,21 +30,30 @@ function handleClient(socket) {
       .on('data', buf => {
         const clientInput =  buf.toString('utf8').replace("\n", "");
         const clientArgs = yargs(clientInput.split(' ')).argv;
+
         console.log('CLIENT::Input:',clientInput)
         console.log('CLIENT::request:',clientArgs)
+        const verboseString = `CLIENT::Input: ${clientInput}\n CLIENT::request: ${JSON.stringify(clientArgs)}\n`
+
 
         const mainApp = new Main(clientArgs);
         
         let response;
+
+        if(isVerbose ) {
+          socket.write(verboseString);
+        }
         
         if(mainApp.isHTTP) {
           response = mainApp.myHttpResponse() || 'no http req';
           socket.write(response);
         } else {
-          mainApp.myFilesResponse().then((data) => {            
-            console.log('SERVER:: data received is:', data);
-            console.log('SERVER:: data type received is:',typeof data);
+          mainApp.myFilesResponse().then((data) => {    
             
+            if (isVerbose) {
+              console.log('SERVER:: data received is:', data);
+              console.log('SERVER:: data type received is:',typeof data);
+            }
             let dataToWrite;
 
             if (typeof data === 'string') {
