@@ -4,9 +4,10 @@ const net   = require('net');
 const yargs = require('yargs');
 const app = require('../app.js');
 const Main = require('../mainApplication.js');
+const ip = require('../config/ip.json');
 
 const argv = yargs.usage('node echoserver.js [--port port]')
-    .default('port', 8007)
+    .default('port', ip.server.port)
     .default('v', false)
     .help('help')
     .argv;
@@ -16,7 +17,12 @@ const isVerbose = argv.v ? true : false;
 const server = net.createServer(handleClient)
     .on('error', err => {throw err; });
 
-server.listen({port: argv.port}, () => {
+/**
+ * Server has to be on 
+ * @param host 192.168.2.3
+ * @param port 8007
+ */
+server.listen({hostname: '192.168.2.3' ,port: argv.port}, () => {
   console.log('Echo server is listening at %j', server.address());
 });
 
