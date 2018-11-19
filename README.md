@@ -56,3 +56,9 @@ get /a.json
 #### post new file
 
 post /something
+
+## Lab 3 Commands
+
+### Run router
+
+npm run router --port=3000 --drop-rate=0.2 --max-delay=10ms --seed=1

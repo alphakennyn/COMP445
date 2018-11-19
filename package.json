@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "httpc": "node app.js",
     "httpserver": "node ./server/echoserver",
-    "httpclient": "node ./clients/echoclient"
+    "httpclient": "node ./clients/echoclient",
+    "router": "cd ./macos && ./router *"
   },
   "repository": {},
   "author": "ENCS",
