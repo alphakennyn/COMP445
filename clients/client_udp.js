@@ -2,89 +2,61 @@
 
 const net = require('net');
 const dgram = require('dgram');
-
 const yargs = require('yargs');
 
+const Packet = require('../models/UDPpacket');
+const url = require('../config/ip.json');
+const { sendto } = require('../models/UDPservices');
+
 const argv = yargs.usage('node echoclient.js [--host host] [--port port]')
-  .default('hostname', '192.168.2.125')
-  .default('port', 41830)
+  .default('hostname', '127.0.0.1')
+  .default('port', url.client.port)
   .help('help')
   .argv;
 
 const options = {
-  host: argv.hostname,
   port: argv.port,
-  name: 'Client guy'
+  address: argv.hostname,
 };
-
 console.log(options)
 
-/**
- * 
- */
-//const client = net.createConnection(options);
+const router = `${url.router.address}:${url.router.port}`;
+
 const client = dgram.createSocket('udp4');
-//set config
-client.bind(options.post, () => {
-  conosle.log()
-  //client.addMembership(options.host);
-  console.log(`listening on a ${options.host}:${options.port}`);
-});
-const requests = [];
+client.bind(options);
 
-
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
   console.log('uncaughtException: ' + err.stack);
 });
-/**
- * Request
- */
-// client.on('connect', () => {
-//   console.log('Type any thing then ENTER. Press Ctrl+C to terminate');
-//   const params = {
-//     assignment: 1,
-//     course: 'networking'
-//   };
-//   // client.write(command);
-
-
-// });
 
 client.on('listening', () => {
   const address = client.address();
-  console.log(`server listening ${address.address}:${address.port}`);
+  console.log(`client listening to ${address.address}:${address.port}`);
 
   process.stdin.on('readable', () => {
-    const chunk = process.stdin.read();
-    if (chunk != null) {
-      console.log('this is chunk',chunk)
-      requests.push({
-        sendLength: chunk.byteLength,
-        response: new Buffer(0)
-      });
-      console.log();
-      client.write(chunk);
+    const input = process.stdin.read();
+    if (input != null) {
+
+      //const buffString = new Buffer(input.toString(), 'ucs2');
+
+      const packetData = new Packet(0,1,'127.0.0.1', url.server.port, input.toString())
+      console.log('hello',packetData);
+      // Allocate 15 bytes to bufToSend
+      const bufToSend = packetData.toBuffer;
+      
+      //IGNORE THIS
+      //const send = [0, 0,0,0,1,192,168,2,3,11,184,105,32,83]; 
+      
+      console.log('bye',bufToSend);
+      client.send(bufToSend, url.router.port, (e) => {
+        //console.log(e);
+        console.log('Client sent: ',bufToSend);
+      })
     }
   });
 
 });
-/**
- * Response
- */
-// client.on('data', buf => {
-//   if (requests.length == 0) {
-//     client.end();
-//     process.exit(-1);
-//   }
 
-//   console.log('Server replied: ', buf.toString("utf-8"))
-//   // const r = requests[0];
-//   // r.response = Buffer.concat([r.response, buf]);
-//   // if(r.response.byteLength >= r.sendLength){
-//   //   requests.shift();
-//   //   console.log("Server replied:\n\n" + r.response.toString("utf-8") + '\n')
-//   // }
-// });
 
 client.on('message', (msg, rinfo) => {
   console.log(`client got: ${msg} from ${rinfo.address}:${rinfo.port}`);
