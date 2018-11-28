@@ -47,29 +47,54 @@ server.on('listening', () => {
 server.on('message', (clientInput, rinfo) => {
   const view = new Uint8Array(clientInput);
   console.log(`Recieved data from ${rinfo.address}:${rinfo.port}`);
-  
+
   // const header = clientInput.slice(0, 10);
   const clientMessage = udp.recvfrom(clientInput);
-  console.log(clientMessage)
-  //const clientArgs = yargs(clientMessage.split(' ')).argv;
-  
-  //const verboseString = `CLIENT::Input: ${clientMessage.data}\n CLIENT::request: ${JSON.stringify(clientArgs)}\n`
 
-  // TODO lab2 stuff
-  //const mainApp = new Main(clientArgs);
+  const senderAddress = clientMessage.senderAddress.join('.');
+  const { senderPort, data } = { ...clientMessage };
+  console.log(senderAddress)
+  console.log(senderPort)
+  console.log(data);
 
+  const clientArgs = yargs(data.split(' ')).argv;
+
+
+  // lab2 stuff
   let response;
 
   if (isVerbose) {
+    const verboseString = `CLIENT::Input: ${data}\nCLIENT::request: ${JSON.stringify(clientArgs)}\n`
     //const verboseData = new Packet(0,1,'127.0.0.1', url.server.port, input.toString())
-    const verboseData = packetData.toBuffer;
+    udp.setPacket(verboseString);
+    udp.sendTo(server, 'Server');
+  }
 
-    client.send(bufToSend, url.router.port, (e) => {
-      //console.log(e);
-      console.log(`Client sent: ${input.toString()}`);
-    })
-    // socket.write(verboseString);
-  }            
+  const mainApp = new Main(clientArgs);
+
+  if (mainApp.isHTTP) {
+    response = mainApp.myHttpResponse() || 'no http req';
+    udp.setPacket(response);
+    udp.sendTo(server, 'Server');
+  } else {
+    mainApp.myFilesResponse().then((data) => {
+      let dataToWrite;
+
+      if (typeof data === 'string') {
+        dataToWrite = Buffer.from(data);
+      } else {
+        dataToWrite = Buffer.from(JSON.stringify(data))
+      }
+      console.log(dataToWrite)
+      // socket.write(dataToWrite);
+      udp.setPacket(dataToWrite);
+      udp.sendTo(server, 'Server');
+
+    }).catch((err) => {
+      console.log(err);
+    });
+
+  }
 });
 
 /**
@@ -85,7 +110,6 @@ server.on('message', (clientInput, rinfo) => {
 
 //       console.log('CLIENT::Input:', clientInput)
 //       console.log('CLIENT::request:', clientArgs)
-
 
 //       const mainApp = new Main(clientArgs);
 

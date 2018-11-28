@@ -1,2 +1,7 @@
 # node app.js httpc $@
-node ./clients/echoclient.js $@
+
+# TCP
+# node ./clients/echoclient.js $@
+
+# UDP
+node ./clients/client_udp $@

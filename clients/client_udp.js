@@ -48,7 +48,8 @@ client.on('listening', () => {
 
 
 client.on('message', (msg, rinfo) => {
-  console.log(`client got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+  console.log(`${rinfo.address}:${rinfo.port}`);
+  console.log(msg.toString('utf8'));
 });
 
 

@@ -15,7 +15,7 @@ module.exports = class UDPservice {
 
   /**
    * @function Create a new packet with the passed value as payload
-   * @param {Buffer} data 
+   * @param {Buffer} data data to send
    */
   setPacket(data) {
     const dataString = data.toString();
@@ -30,7 +30,6 @@ module.exports = class UDPservice {
    */
   sendTo(socket, sender){
     socket.send(this.sendData , this.routerPort, () => {
-      console.log(`${sender} just sent data`);
       this.sendData = null;
     });
   }
@@ -38,28 +37,27 @@ module.exports = class UDPservice {
   recvfrom(recvData) {
     const payloadLength = recvData.length - 1;
 
-    const senderAddress = Buffer.alloc(4);//new Uint8Array(recvData.copy(5,9));
-    const senderPort = Buffer.alloc(2);//recvData.copy(9,11).readInt16BE(0);
-    console.log('1st time', recvData)
-    recvData.copy(senderAddress, 0, 5, 9);
-    console.log('2nd time', recvData)
-    recvData.copy(senderPort, 0, 9, 11);
-
-    setTimeout(() => {
-      console.log('waited 1s time')
-      console.log(recvData)
-
-    }, 50);
+    const senderAddress = new Int8Array(recvData.slice(5,9)); // Buffer.alloc(4);//
+    const senderPort = recvData.slice(9,11).readUInt16BE(0); // Buffer.alloc(2);//
+    // console.log(recvData)
+    
+    // recvData.copy(senderAddress, 0, 5, 9);
+    // recvData.copy(senderPort, 0, 9, 11);
 
     const data = recvData.toString('utf-8', 11, payloadLength);
 
-    console.log('sender address: ', new Uint8Array(senderAddress))
-    console.log('sender port: ', senderPort)
+    // console.log('sender address: ', new Uint8Array(senderAddress))
+    // console.log('Length: ', senderPort.length)
+    // console.log('Int8: ', senderPort.readUInt8(0))
+    // console.log('readUInt16BE: ', senderPort.readUInt16BE(0))
+    // console.log('readUInt16LE: ', senderPort.readUInt16LE(0))
+    // console.log('readUIntBE: ', senderPort.readUIntBE(0, senderPort.length))
+    // console.log('readUIntLE: ', senderPort.readUIntLE(0, senderPort.length))
+
     return {
       senderAddress,
       senderPort,
       data,
     } 
-    // Todo return sender address:port
   }
 }

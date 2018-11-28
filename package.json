@@ -7,9 +7,9 @@
     "httpc": "node app.js",
     "httpserver": "node ./server/echoserver_tcp",
     "httpclient": "node ./clients/echoclient",
-    "httpserverudp": "node ./server/server_udp",
-    "httpclientudp": "node ./clients/client_udp",
-    "router": "cd ./macos && ./router *"
+    "httpserverudp": "node ./server/server_udp .",
+    "httpclientudp": "node ./clients/client_udp .",
+    "router": "cd ./macos && ./router ."
   },
   "repository": {},
   "author": "ENCS",

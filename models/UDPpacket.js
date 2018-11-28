@@ -24,7 +24,7 @@ module.exports = class Packet {
     }, new Uint8Array(4));
 
     const peerPort = Buffer.alloc(2);
-    peerPort.writeInt16BE(this.peerPort, 0);
+    peerPort.writeUInt16BE(this.peerPort, 0);
 
     const payload = Buffer.from(this.payload, 'utf-8');
 
