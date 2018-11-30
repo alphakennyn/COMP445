@@ -30,7 +30,7 @@ module.exports = class Packet {
 
     // Get total length
     const length = type.length + sequenceNum.length + ipArray.length + peerPort.length + payload.length;
-
+    
     // return buffer array
     return Buffer.concat([type,sequenceNum, ipArray ,peerPort, payload],length);
     

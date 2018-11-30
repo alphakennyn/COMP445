@@ -76,9 +76,6 @@ module.exports = class MainApplication {
     const filePath = path.join(__dirname, 'storage', this.MyArgs.url);
     const fileClient = new FileClient(filePath);
 
-    console.log(this.MyArgs.url)
-    console.log(this.MyArgs.url.includes('/'))
-
     if (this.MyArgs.url === '/' && this.MyArgs.requestType === 'get') {
       return fileClient.getFile();
     } else if (this.MyArgs.url === '') {

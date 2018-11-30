@@ -39,8 +39,17 @@ client.on('listening', () => {
   process.stdin.on('readable', () => {
     const input = process.stdin.read();
     if (input != null) {
-      udp.setPacket(input);
-      udp.sendTo(client, 'Client');
+
+      // Set data to send
+      udp.dataToSend = input;
+      
+      // send first bit of input and start chain reaction
+      udp.setPacket(udp.dataToSend[0]);
+      udp.sendTo(client);
+
+      // const inputStringArr = input.toString().split('');
+      // inputStringArr.forEach(element => {
+      // });
     }
   });
 
@@ -48,8 +57,19 @@ client.on('listening', () => {
 
 
 client.on('message', (msg, rinfo) => {
-  console.log(`${rinfo.address}:${rinfo.port}`);
-  console.log(msg.toString('utf8'));
+  // console.log(`${rinfo.address}:${rinfo.port}`);
+  udp.serverStatus = 'ACK';
+  if (udp.serverStatus === 'ACK' && udp.dataToSend.length > 1) {
+    console.log('from client')
+
+    udp.getRcvData(msg);
+
+    udp.setPacket(udp.dataToSend[0]);
+    udp.sendTo(client);
+
+  }
+
+
 });
 
 
