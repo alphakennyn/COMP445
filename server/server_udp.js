@@ -44,34 +44,20 @@ server.on('listening', () => {
 });
 
 server.on('message', (clientInput, rinfo) => {
-  console.log(`Recieved data from ${rinfo.address}:${rinfo.port}`);
+  //console.log(`Recieved data from ${rinfo.address}:${rinfo.port}`);
 
-  // const header = clientInput.slice(0, 10);
-  //const clientMessage = udp.recvfrom(clientInput);
-  
   // console.log(`${rinfo.address}:${rinfo.port}`);
-  udp.serverStatus = 'ACK';
+  const sequenceIndex = udp.getRcvData(clientInput);
 
-  if (udp.serverStatus === 'ACK') {
-    // got something, respond ack
-    console.log('from server')
-    udp.getRcvData(clientInput);
+  if (typeof sequenceIndex === 'string') {
+    console.log('time for lab2 stuff')
+    console.log('server is ready with: ', udp.dataToRcv)
 
-    udp.setPacket(udp.serverStatus);
+
+  } else {
+    udp.setPacket(sequenceIndex);
     udp.sendTo(server);
-
   }
-  
-  //console.log(clientInput);
-  // udp.dataToRcv = clientInput;
-  // udp.setPacket('ACK');
-  // udp.sendTo(server, 'Server');
-
-
-  //const senderAddress = clientMessage.senderAddress.join('.');
-  // if () {
-  //   udp.lab2Stuff(isVerbose ,clientMessage);
-  // }
 
 });
 

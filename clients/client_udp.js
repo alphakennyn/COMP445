@@ -24,6 +24,7 @@ const router = `${url.router.address}:${url.router.port}`;
 
 const client = dgram.createSocket('udp4');
 let udp = null;
+let triggerRCV = true;
 
 client.bind(options);
 
@@ -42,7 +43,7 @@ client.on('listening', () => {
 
       // Set data to send
       udp.dataToSend = input;
-      
+
       // send first bit of input and start chain reaction
       udp.setPacket(udp.dataToSend[0]);
       udp.sendTo(client);
@@ -58,17 +59,19 @@ client.on('listening', () => {
 
 client.on('message', (msg, rinfo) => {
   // console.log(`${rinfo.address}:${rinfo.port}`);
-  udp.serverStatus = 'ACK';
-  if (udp.serverStatus === 'ACK' && udp.dataToSend.length > 1) {
-    console.log('from client')
+  // udp.serverStatus = 'ACK';
+  const rcvIndex = udp.getRcvData(msg);
 
-    udp.getRcvData(msg);
+  let packetToSend = null;
 
-    udp.setPacket(udp.dataToSend[0]);
-    udp.sendTo(client);
-
+  if (!!rcvIndex.data && rcvIndex.data === 'ACK' && udp.dataToSend.length === 0) {
+    packetToSend = 'DONE';
+  } else {
+    packetToSend = udp.dataToSend[0];
   }
 
+  udp.setPacket(packetToSend);
+  udp.sendTo(client);
 
 });
 
