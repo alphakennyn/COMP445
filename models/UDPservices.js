@@ -1,6 +1,7 @@
 `use strict`
 const Packet = require('./UDPpacket');
 const Main = require('../mainApplication.js');
+const yargs = require('yargs');
 
 module.exports = class UDPservice {
 
@@ -124,6 +125,8 @@ module.exports = class UDPservice {
           index: this.rcvIndex,
           data: 'ACK',
         };
+      } else if(typeof data === 'string') {
+        
       } else {
         return {
           index: this.rcvIndex,
@@ -168,8 +171,8 @@ module.exports = class UDPservice {
 
     if (mainApp.isHTTP) {
       response = mainApp.myHttpResponse() || 'no http req';
-      udp.setPacket(response);
-      udp.sendTo(server, 'Server');
+      return response;
+      //udp.sendTo(server, 'Server');
     } else {
       mainApp.myFilesResponse().then((data) => {
         let dataToWrite;
@@ -183,8 +186,9 @@ module.exports = class UDPservice {
         console.log(dataToWrite.toString());
 
         // socket.write(dataToWrite);
-        udp.setPacket(dataToWrite);
-        udp.sendTo(server, 'Server');
+        return dataToWrite;
+        // udp.setPacket(dataToWrite);
+        // udp.sendTo(server, 'Server');
 
       }).catch((err) => {
         console.log(err);

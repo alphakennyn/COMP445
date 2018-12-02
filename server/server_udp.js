@@ -26,6 +26,7 @@ let udp = null;
 
 const router = `${ip.router.address}:${ip.router.port}`;
 const serverURL = `${options.host}:${options.port}`;
+const Main = require('../mainApplication.js');
 
 const server = dgram.createSocket('udp4');
 
@@ -52,12 +53,12 @@ server.on('message', (clientInput, rinfo) => {
   if (typeof sequenceIndex === 'string') {
     console.log('time for lab2 stuff')
     console.log('server is ready with: ', udp.dataToRcv)
-
-
+    const lab2Result = lab2Stuff(isVerbose, udp.dataToRcv);
+    udp.setPacket(lab2Result);
   } else {
     udp.setPacket(sequenceIndex);
-    udp.sendTo(server);
   }
+  udp.sendTo(server);
 
 });
 
@@ -74,3 +75,46 @@ server.on('close', err => {
 });
 
 
+function lab2Stuff(clientMessage) {
+  //const { senderPort, data } = { ...clientMessage };
+
+  const clientArgs = yargs(clientMessage.toString().split(' ')).argv;
+
+  // lab2 stuff
+  let response;
+
+  if (isVerbose) {
+    const verboseString = `CLIENT::Input: ${clientMessage}\nCLIENT::request: ${JSON.stringify(clientArgs)}\n`
+    udp.setPacket(verboseString);
+    udp.sendTo(server, 'Server');
+  }
+
+  const mainApp = new Main(clientArgs);
+
+  if (mainApp.isHTTP) {
+    response = mainApp.myHttpResponse() || 'no http req';
+    return response;
+    //udp.sendTo(server, 'Server');
+  } else {
+    mainApp.myFilesResponse().then((data) => {
+      let dataToWrite;
+
+      if (typeof data === 'string') {
+        dataToWrite = Buffer.from(data);
+      } else {
+        dataToWrite = Buffer.from(JSON.stringify(data))
+      }
+      console.log(dataToWrite)
+      console.log(dataToWrite.toString());
+
+      // socket.write(dataToWrite);
+      return dataToWrite;
+      // udp.setPacket(dataToWrite);
+      // udp.sendTo(server, 'Server');
+
+    }).catch((err) => {
+      console.log(err);
+    });
+
+  }
+}
